@@ -5,38 +5,52 @@
 
 using namespace std;
 
-int N;
-double distArr[9][9];
+char arr[10][17] = {
+	"xxx.............",
+	"...x...x.x.x....",
+	"....x.....x...xx",
+	"x...xxxx........",
+	"......xxx.x.x...",
+	"x.x...........xx",
+	"...x..........xx",
+	"....xx.x......xx",
+	".xxxxx..........",
+	"...xxx...x...x.."
+};
 
-double calc(vector<int>& path, vector<bool> visited, double dist) {
-	bool allVisited = true;
-	for (int i = 0; i < visited.size(); ++i) {
-		if (!visited[i]) {
-			allVisited = false;
-			break;
+const int INF = 9999;
+
+int calc(int cur[17], int count, int start) {
+	if (start == 10) {
+		bool complete = true;
+		for (int i = 0; i < 16; ++i) {
+			if (cur[i] != 12) {
+				complete = false;
+				break;
+			}
+		}
+
+		if (complete) {
+			return count;
+		} else {
+			return INF;
 		}
 	}
 
-	if (allVisited) {
-		return dist;
-	}
+	int ret = INF;
+		for (int k = 1; k <= 4; ++k) {
+			for (int j = 0; j < 16; ++j) {
+				if (arr[start][j] == 'x') {
+					cur[j] += 3;
+					if (cur[j] >= 15) {
+						cur[j] -= 12;
+					}
+				}
+			}
 
-
-	double ret = 15000;
-	for (int i = 0; i < N; ++i) {
-		if (!visited[i]) {
-			int here = path.back();
-
-			visited[i] = true;
-			path.push_back(i);
-
-			double cand = calc(path, visited, dist + distArr[here][i]);
+			int cand = calc(cur, count + (k%4), start + 1);
 			ret = ret < cand ? ret : cand;
-
-			path.pop_back();
-			visited[i] = false;
 		}
-	}
 
 	return ret;
 }
@@ -49,34 +63,15 @@ int main() {
 	cin >> T;
 
 	while (T--) {
-		cin >> N;
-		for (int i = 0; i < N; ++i) {
-			for (int j = 0; j < N; ++j) {
-				cin >> distArr[i][j];
-			}
+		int cur[17];
+		for (int i = 0; i < 16; ++i) {
+			cin >> cur[i];
 		}
 
-		vector<int> path;
-		vector<bool> visited;
-		for (int i = 0; i < N; ++i) {
-			visited.push_back(false);
+		int ans = calc(cur, 0, 0);
+		if (ans == INF) {
+			ans = -1;
 		}
-
-		double ans = 15000;
-
-		for (int i = 0; i < N; ++i) {
-			path.push_back(i);
-			visited[i] = true;
-			double cand = calc(path, visited, 0);
-			ans = ans < cand ? ans : cand;
-			path.pop_back();
-			visited[i] = false;
-		}
-
-
-		cout << fixed;
-		cout.precision(10);
-
 		cout << ans << '\n';
 	}
 
