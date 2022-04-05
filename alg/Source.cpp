@@ -1,57 +1,45 @@
 #include <iostream>
 #include <algorithm>
 #include <string.h>
+#include <vector>
 
 using namespace std;
 
-int H, W;
-char arr[21][21];
+int N;
+double distArr[9][9];
 
-int dy[][2] = { { -1, -1 }, { -1, -1 }, { -1, 0 }, { 0, -1 } };
-int dx[][2] = { { 0, -1 }, { 0, 1 }, { 0, 1 }, { 1, 1 } };
-
-int count(char arr[21][21]) {
-	int startY = -1, startX = -1;
-	for (int i = 0; i < H; ++i) {
-		for (int j = 0; j < W; ++j) {
-			if (arr[i][j] == '.') {
-				startY = i;
-				startX = j;
-				break;
-			}
+double calc(vector<int>& path, vector<bool> visited, double dist) {
+	bool allVisited = true;
+	for (int i = 0; i < visited.size(); ++i) {
+		if (!visited[i]) {
+			allVisited = false;
+			break;
 		}
 	}
 
-	if (startY == -1) {
-		return 1;
+	if (allVisited) {
+		return dist;
 	}
 
-	int ret = 0;
-	for (int n = 0; n < 4; ++n) {
-		int y1 = startY + dy[n][0];
-		int x1 = startX + dx[n][0];
 
-		int y2 = startY + dy[n][1];
-		int x2 = startX + dx[n][1];
+	double ret = 15000;
+	for (int i = 0; i < N; ++i) {
+		if (!visited[i]) {
+			int here = path.back();
 
-		if (y1 >= 0 && y1 < H && x1 >= 0 && x1 < W
-			&& y2 >= 0 && y2 < H && x2 >= 0 && x2 < W) {
-			if (arr[y1][x1] == '.' && arr[y2][x2] == '.') {
-				arr[y1][x1] = '#';
-				arr[y2][x2] = '#';
-				arr[startY][startX] = '#';
+			visited[i] = true;
+			path.push_back(i);
 
-				ret += count(arr);
+			double cand = calc(path, visited, dist + distArr[here][i]);
+			ret = ret < cand ? ret : cand;
 
-				arr[y1][x1] = '.';
-				arr[y2][x2] = '.';
-				arr[startY][startX] = '.';
-			}
+			path.pop_back();
+			visited[i] = false;
 		}
 	}
+
 	return ret;
 }
-
 
 
 int main() {
@@ -61,16 +49,35 @@ int main() {
 	cin >> T;
 
 	while (T--) {
-		cin >> H >> W;
-
-		for (int i = 0; i < H; ++i) {
-			for (int j = 0; j < W; ++j) {
-				cin >> arr[i][j];
+		cin >> N;
+		for (int i = 0; i < N; ++i) {
+			for (int j = 0; j < N; ++j) {
+				cin >> distArr[i][j];
 			}
 		}
 
-		cout << count(arr) << '\n';
+		vector<int> path;
+		vector<bool> visited;
+		for (int i = 0; i < N; ++i) {
+			visited.push_back(false);
+		}
 
+		double ans = 15000;
+
+		for (int i = 0; i < N; ++i) {
+			path.push_back(i);
+			visited[i] = true;
+			double cand = calc(path, visited, 0);
+			ans = ans < cand ? ans : cand;
+			path.pop_back();
+			visited[i] = false;
+		}
+
+
+		cout << fixed;
+		cout.precision(10);
+
+		cout << ans << '\n';
 	}
 
 	return 0;
