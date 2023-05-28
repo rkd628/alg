@@ -1,39 +1,40 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
-string str;
-int indx;
-
-string rev() {
-	int cur = indx;
-	indx++;
-
-	if (str[cur] == 'w' || str[cur] == 'b') {
-		return string(1, str[cur]);
+int stringToInt(string str) {
+	int ret=0;
+	for (int i=0;i<str.length();++i) {
+		ret*=10;
+		int a = str[i] - '0';
+		ret += a;
 	}
-
-	string leftUpper = rev();
-	string rightUpper = rev();
-	string leftLower = rev();
-	string rightLower = rev();
-
-	return 'x' + leftLower + rightLower + leftUpper + rightUpper;
+	return ret;
 }
 
-
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
 
 	int T;
-	cin >> T;
+	cin>>T;
 
-	while (T--) {
-		cin >> str;
-		indx = 0;
-		
-		cout << rev() << '\n';
+	int ts=1;
+	while(T--) {
+		string s;
+		cin>>s;
+
+		int minn = 999999999;
+		for (int i=1;i<s.length(); ++i) {
+			string s1 = s.substr(0, i);
+			string s2 = s.substr(i,s.length());
+
+			int a1 = stringToInt(s1);
+			int a2 = stringToInt(s2);
+			
+			minn = minn > a1 + a2 ? a1 + a2 : minn;
+		}
+
+		cout <<"#"<<ts++<< " "<<minn<<"\n";
 	}
 
 	return 0;
