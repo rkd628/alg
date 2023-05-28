@@ -1,4 +1,7 @@
 # Prerequisites
+*
+!*.*
+!*/
 *.d
 
 # Compiled Object files
@@ -39,3 +42,6 @@ alg/x64
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+
+# vscode
+.vscode/
