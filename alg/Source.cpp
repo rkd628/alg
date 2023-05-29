@@ -3,38 +3,34 @@
 
 using namespace std;
 
-int stringToInt(string str) {
-	int ret=0;
-	for (int i=0;i<str.length();++i) {
-		ret*=10;
-		int a = str[i] - '0';
-		ret += a;
-	}
-	return ret;
-}
+int main()
+{
 
-int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
 
 	int T;
-	cin>>T;
+	cin >> T;
 
-	int ts=1;
-	while(T--) {
-		string s;
-		cin>>s;
+	int ts = 1;
+	while (T--)
+	{
+		int N;
+		cin >> N;
 
-		int minn = 999999999;
-		for (int i=1;i<s.length(); ++i) {
-			string s1 = s.substr(0, i);
-			string s2 = s.substr(i,s.length());
-
-			int a1 = stringToInt(s1);
-			int a2 = stringToInt(s2);
-			
-			minn = minn > a1 + a2 ? a1 + a2 : minn;
+		int cnt = 0;
+		for (int i = 0; i <= N; ++i)
+		{
+			for (int j = 1; j <= N; ++j)
+			{
+				if (i * i + j * j <= N * N)
+				{
+					cnt++;
+				}
+			}
 		}
 
-		cout <<"#"<<ts++<< " "<<minn<<"\n";
+		cout << "#" << ts++ << " " << cnt * 4 + 1 << "\n";
 	}
 
 	return 0;
